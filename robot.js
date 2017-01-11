@@ -3,16 +3,27 @@ function Robot() {
   const directions = ["SOUTH","WEST","NORTH","EAST"];
   var currentDirection = null;
   var pos = {
-    x: null;
-    y: null;
+    x: null,
+    y: null
   }
   var onTable = false;
 
   return {
+    process:function(cmds) {
+      let CMDS = cmds.split(" ");
+      for (var i = 0; i < CMDS.length; ++i) {
+        if (CMDS === "PLACE") {
+          command(CMDS[i++].concat(" ", CMDS[i]));
+        } else {
+          command(CMDS[i]);
+        }
+      }
+    },
+
     command:function(cmd) {
       switch(cmd) {
         case "PLACE":
-          place(cmd.split(" ")[0]);
+          place(cmd.split(" ")[1]);
           break;
         case "MOVE":
           move();
@@ -38,23 +49,25 @@ function Robot() {
     },
 
     move:function() {
-      if (currentDirection%2===0) {
-        pos.y += currentDirection-1;
-      } else {
-        pos.x += currentDirection-2;
+      if (onTable) {
+        if (currentDirection%2===0 || ( pos.y + currentDirection - 1 >= 0 && pos.y + currentDirection - 1 < 5 ) {
+          pos.y += currentDirection-1;
+        } else if ( pos.x + currentDirection-2 >= 0 && pos.x + currentDirection-2 >= 0 ) {
+          pos.x += currentDirection-2;
+        }
       }
     },
 
     left:function() {
-      currentDirection--;
+      if (onTable) currentDirection--;
     },
 
     right:function() {
-      currentDirection++;
+      if (onTable) currentDirection++;
     },
 
     report:function() {
-      return "Output: " + [pos.x,pos.y,direction[currentDirection]].join(",")
+      if (onTable) console.log( "Output: " + [pos.x,pos.y,direction[currentDirection]].join(",") );
     }
 
   }
